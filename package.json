@@ -1,9 +1,9 @@
 {
-  "name": "gulp-changed-in-place",
+  "name": "@papermooseau/gulp-changed-in-place",
   "version": "2.3.0",
   "description": "Only pass through changed files",
   "license": "MIT",
-  "repository": "alexgorbatchev/gulp-changed-in-place",
+  "repository": "papermooseau/gulp-changed-in-place",
   "author": {
     "name": "Alex Gorbatchev",
     "email": "alex.gorbatchev@gmail.com",
