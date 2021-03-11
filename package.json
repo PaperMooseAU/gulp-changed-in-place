@@ -1,6 +1,6 @@
 {
   "name": "@papermooseau/gulp-changed-in-place",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Only pass through changed files",
   "license": "MIT",
   "repository": "papermooseau/gulp-changed-in-place",
