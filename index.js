@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var path = require('path');
 var through = require('through2');
+var fs = require('fs');
 
 var GLOBAL_CACHE = {};
 
@@ -40,6 +41,21 @@ function processFileBySha1Hash(stream, firstPass, basePath, file, cache) {
   }
 }
 
+function mapCacheKeys(cache, fn) {
+  return Object.entries(cache).reduce(
+    (acc, [path, hash]) => ({
+      ...acc,
+      [fn(path)]: hash
+    }),
+    {}
+  );
+}
+
+const relativiseCache = cache =>
+  mapCacheKeys(cache, cachePath => path.relative(process.cwd(), cachePath));
+const absolutiseCache = cache =>
+  mapCacheKeys(cache, cachePath => path.join(process.cwd(), cachePath));
+
 module.exports = function (options) {
   options = options || {};
 
@@ -57,11 +73,34 @@ module.exports = function (options) {
   }
 
   var basePath = options.basePath || undefined;
-  var cache = options.cache || GLOBAL_CACHE;
   var firstPass = options.firstPass === true;
 
-  return through.obj(function (file, encoding, callback) {
+  let cache = options.cache;
+  let cacheFile;
+  if (typeof cache === 'string') { 
+    cacheFile = cache;
+    try {
+      cache = absolutiseCache(JSON.parse(fs.readFileSync(cacheFile))) 
+    } catch (error) {
+      cache = {};
+      firstPass = true;
+      console.log(`Missing or invalid cache file (${cacheFile}), all files will be treated as changed.`);
+    }
+  } else {
+    cache = cache || GLOBAL_CACHE;
+  }
+
+  const stream = through.obj(function (file, encoding, callback) {
     processFile(this, firstPass, basePath, file, cache);
     callback();
-  });
+  })
+
+  if (cacheFile) {
+    stream.on("end", () => {
+      fs.mkdirSync(path.dirname(cacheFile), { recursive: true });
+      fs.writeFileSync(cacheFile, JSON.stringify(relativiseCache(cache)));
+    });
+  }
+
+  return stream;
 }

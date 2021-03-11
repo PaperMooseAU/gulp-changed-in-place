@@ -33,6 +33,21 @@ gulp.task('default', function () {
 });
 ```
 
+With a cache file to track changes between runs:
+
+```js
+var gulp = require('gulp');
+var changedInPlace = require('gulp-changed-in-place');
+var tsfmt = require('gulp-tsfmt');
+
+gulp.task('default', function () {
+  return gulp.src('src/**/*.{ts,tsx}')
+    .pipe(changedInPlace({ cache: '.cache/changes.json' }))
+    .pipe(tsfmt())
+    .pipe(gulp.dest('src'));
+});
+```
+
 ## API
 
 ### changed(options)
@@ -44,10 +59,12 @@ gulp.task('default', function () {
   Makes `gulp-changed-in-place` pass through all files once on the first run.
 
 #### `cache`
-* `Object`
+* `Object` || `string`
 * Default = `{}`
 
-  Object of `{ key: value }` format for all the files that is shared between all runs. Value will be hash or modification time, depending on the `howToDetermineDifference` option.
+  Either an object of `{ key: value }` format for all the files that is shared between all runs, or a string representing the path to a file to store the cache in. Values added to the object will be hash or modification time, depending on the `howToDetermineDifference` option.
+  
+  If a file is specified and does not exist, it will be created (including any parent directories), and `firstPass` will be set to true.
 
 #### `howToDetermineDifference`
 * `"hash" || "modification-time"`
