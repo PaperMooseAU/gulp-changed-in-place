@@ -1,4 +1,6 @@
-# gulp-changed-in-place
+# @papermooseau/gulp-changed-in-place
+
+**Note: this is a fork of [gulp-changed-in-place](https://github.com/alexgorbatchev/gulp-changed-in-place), which is no longer maintained. This fork adds support for cache files.**
 
 [![Dependency status](https://img.shields.io/david/alexgorbatchev/gulp-changed-in-place.svg?style=flat)](https://david-dm.org/alexgorbatchev/gulp-changed-in-place)
 [![devDependency Status](https://img.shields.io/david/dev/alexgorbatchev/gulp-changed-in-place.svg?style=flat)](https://david-dm.org/alexgorbatchev/gulp-changed-in-place#info=devDependencies)
